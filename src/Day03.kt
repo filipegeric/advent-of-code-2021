@@ -20,7 +20,7 @@ fun main() {
         return gammaDecimal to epsilonDecimal
     }
 
-    fun part1(input: List<String>): Int {
+    fun getCounters(input: List<String>): Map<Int, Counter> {
         val counters = mutableMapOf<Int, Counter>()
 
         for (number in input) {
@@ -33,19 +33,47 @@ fun main() {
             }
         }
 
-        val (gamma, epsilon) = getGammaAndEpsilonFromCounters(counters)
+        return counters
+    }
 
+    fun getCounterAt(index: Int, input: List<String>): Counter {
+        val counter = Counter()
+        for (el in input) {
+            when (el[index]) {
+                '0' -> counter.zeros++
+                '1' -> counter.ones++
+            }
+        }
+        return counter
+    }
+
+    fun part1(input: List<String>): Int {
+        val counters = getCounters(input)
+        val (gamma, epsilon) = getGammaAndEpsilonFromCounters(counters)
         return gamma * epsilon
     }
 
     fun part2(input: List<String>): Int {
-        return 0
+        val oxygenList = input.toMutableList()
+        val co2List = input.toMutableList()
+
+        for (i in input.first().indices) {
+            val counterOxygen = getCounterAt(i, oxygenList)
+            val oxygenChar = if (counterOxygen.zeros > counterOxygen.ones) '1' else '0'
+            oxygenList.removeIf { it[i] == oxygenChar && oxygenList.size > 1 }
+
+            val counterCo2 = getCounterAt(i, co2List)
+            val co2Char = if (counterCo2.zeros > counterCo2.ones) '0' else '1'
+            co2List.removeIf { it[i] == co2Char && co2List.size > 1 }
+        }
+
+        return oxygenList.first().toInt(2) * co2List.first().toInt(2)
     }
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day03_test")
     check(part1(testInput) == 198)
-    check(part2(testInput) == 0)
+    check(part2(testInput) == 230)
 
     val input = readInput("Day03")
     println(part1(input))

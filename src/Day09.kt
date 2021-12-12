@@ -64,15 +64,3 @@ fun main() {
     println(part1(input))
     println(part2(input))
 }
-
-private fun List<String>.toMatrix(): Matrix = this.map { s ->
-    s.split("").drop(1).dropLast(1).map { it.toInt() }.toIntArray()
-}.toTypedArray()
-
-private inline fun Matrix.forEach(block: (i: Int, j: Int) -> Unit) {
-    for (i in this.indices) {
-        for (j in this[i].indices) {
-            block(i, j)
-        }
-    }
-}
